@@ -1,0 +1,19 @@
+networks:
+  default:
+    name: radar
+  weather_sys:
+    external: true
+services:
+  code:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    env_file: env.local
+    networks:
+      default: {}
+      weather_sys:
+        aliases:
+        - radar
+    ports:
+    - 4821:4821
+    command: tail -F anything
