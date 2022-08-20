@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-tw0rn*7mcehfl#p-i%((3ol4-6u8)4ndhe#9gh8-+4_f%w$+6$
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['0.0.0.0']
 
 
 # Application definition
@@ -76,26 +76,33 @@ WSGI_APPLICATION = 'code_runner.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
+DB_NAME = os.environ.get('DB_NAME', 'ingest_db')
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': BASE_DIR / 'ingest_db',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': os.environ.get('DB_NAME', 'ingest_db'),
         'USER': os.environ.get('DB_USER', 'user'),
         'PASSWORD': os.environ.get('DB_PASSWORD', 'password'),
         'HOST': os.environ.get('DB_HOST', 'ingest_host'),
         'PORT': 5432,
-        'TEST': 'test_ingest_db'
+        # 'TEST': 'test_ingest_db'
     }
 }
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#     }
+# }
 # Cache
 
-CACHES = {
-    'default': {
-        'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': os.environ.get('REDIS_URL', 'redis:6379'),
-    },
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'redis_cache.RedisCache',
+#         'LOCATION': os.environ.get('REDIS_URL', 'redis:6379'),
+#     },
+# }
 
 
 # Password validation

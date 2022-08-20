@@ -4,10 +4,13 @@ networks:
   weather_sys:
     external: true
 services:
-  code:
+  code_http:
     build:
       context: .
       dockerfile: Dockerfile
+    depends_on:
+      db:
+        condition: service_healthy
     env_file: env.local
     networks:
       default: {}
@@ -16,4 +19,20 @@ services:
         - radar
     ports:
     - 4821:4821
-    command: tail -F anything
+    command: >
+      sh -c "python3 code_runner/manage.py migrate &&
+            python3 code_runner/manage.py runserver 0.0.0.0:4821"
+  db:
+    image: postgres:13
+    env_file: env.local
+    healthcheck:
+      interval: 5.0s
+      retries: 5
+      test:
+      - CMD
+      - pg_isready
+      - --dbname=radar_db
+      - --username=radar_user
+      timeout: 5.0s
+    ports:
+      - 5432:5432
