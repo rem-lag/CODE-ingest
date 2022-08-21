@@ -22,9 +22,13 @@ services:
     command: >
       sh -c "python3 code_runner/manage.py migrate &&
             python3 code_runner/manage.py runserver 0.0.0.0:4821"
+    volumes:
+      - ./:/radar:consistent
   db:
-    image: postgres:13
+    image: postgres:13-alpine
     env_file: env.local
+    networks:
+      default: {}
     healthcheck:
       interval: 5.0s
       retries: 5
@@ -36,3 +40,28 @@ services:
       timeout: 5.0s
     ports:
       - 5432:5432
+  redis:
+    image: redis:alpine
+    networks:
+      default: {}
+  celery:
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "cd code_runner &&
+            celery -A code_runner worker -l info"
+    volumes:
+      - ./code_runner/:/radar/code_runner/:consistent
+    env_file: env.local
+    networks:
+      default: {}
+      weather_sys: {}
+    depends_on:
+      code_http:
+        condition: service_started
+      redis:
+        condition: service_started
+      db:
+        condition: service_healthy
