@@ -96,12 +96,12 @@ CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 # Cache
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'redis_cache.RedisCache',
-#         'LOCATION': os.environ.get('REDIS_URL', 'redis:6379'),
-#     },
-# }
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': os.environ.get('REDIS_CACHE_URL', 'redis:6379'),
+    },
+}
 
 
 # Password validation
