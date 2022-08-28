@@ -3,6 +3,8 @@ networks:
     name: radar
   weather_sys:
     external: true
+volumes:
+  pgdata: {}
 services:
   code_http:
     build:
@@ -29,6 +31,8 @@ services:
     env_file: env.local
     networks:
       default: {}
+    volumes:
+    - pgdata:/var/lib/postgresql/data
     healthcheck:
       interval: 5.0s
       retries: 5
