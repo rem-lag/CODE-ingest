@@ -4,3 +4,4 @@ djangorestframework
 django-redis
 redis==4.3.4
 psycopg2>=2.8.0
+arm-pyart
